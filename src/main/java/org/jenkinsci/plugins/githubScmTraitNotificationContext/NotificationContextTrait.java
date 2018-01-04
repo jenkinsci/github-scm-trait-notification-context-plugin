@@ -73,7 +73,7 @@ public class NotificationContextTrait extends SCMSourceTrait {
         }
     }
 
-    private final class CustomContextNotificationStrategy extends AbstractGitHubNotificationStrategy {
+    private static final class CustomContextNotificationStrategy extends AbstractGitHubNotificationStrategy {
 
         private String contextLabel;
         private boolean typeSuffix;
