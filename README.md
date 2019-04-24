@@ -5,3 +5,5 @@ This plugin allows defining custom context labels for GitHub build status notifi
 ## How to use this plugin
 
 After installing go to the job configuration. Under "Branch sources" -> "GitHub" -> "Behaviors" click "Add" and select "Custom Github Notification Context" from the dropdown menu. Then you can type your custom context name into the "Label" field.
+
+## Testing default behaviour for the plugin
