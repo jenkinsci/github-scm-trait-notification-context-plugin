@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Github Branch Source trait to define custom context labels for Github build status notifications.
+    GitHub Branch Source trait to define custom context labels for Github build status notifications.
 </div>
