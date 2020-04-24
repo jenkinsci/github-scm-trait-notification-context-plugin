@@ -21,6 +21,13 @@ public class NotificationContextTrait extends SCMSourceTrait {
 
     private String contextLabel;
     private boolean typeSuffix;
+    private String messageGood;
+    private String messageUnstable;
+    private String messageFailure;
+    private String messageAborted;
+    private String messageOther;
+    private String messagePending;
+    private String messageQueued;
 
     @DataBoundConstructor
     public NotificationContextTrait(String contextLabel, boolean typeSuffix) {
@@ -101,9 +108,28 @@ public class NotificationContextTrait extends SCMSourceTrait {
 
         @Override
         public List<GitHubNotificationRequest> notifications(GitHubNotificationContext notificationContext, TaskListener listener) {
+            message = messageQueued.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Queued() : messageQueued;
+            build = notificationContext.getBuild();
+            if (null != build) {
+                Result result = build.getResult();
+                if (Result.SUCCESS.equals(result)) {
+                    return messageGood.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Good() : messageGood;
+                } else if (Result.UNSTABLE.equals(result)) {
+                    return messageUnstable.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Unstable() : messageUnstable;
+                } else if (Result.FAILURE.equals(result)) {
+                    return messageFailure.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Failure() : messageFailure;
+                } else if (Result.ABORTED.equals(result)) {
+                    return messageAborted.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Aborted() : messageAborted;
+                } else if (result != null) { // NOT_BUILT etc.
+                    return messageOther.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Other() : messageOther;
+                } else {
+                    return messagePending.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Pending() : messagePending;
+                }
+            }
+
             return Collections.singletonList(GitHubNotificationRequest.build(buildContext(notificationContext),
                     notificationContext.getDefaultUrl(listener),
-                    notificationContext.getDefaultMessage(listener),
+                    message,
                     notificationContext.getDefaultState(listener),
                     notificationContext.getDefaultIgnoreError(listener)));
         }

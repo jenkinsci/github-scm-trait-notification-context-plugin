@@ -6,4 +6,25 @@
     <f:entry title="Label" field="contextLabel">
         <f:textbox default="continuous-integration/jenkins"/>
     </f:entry>
+    <f:entry title="Success message" field="messageGood">
+        <f:textbox default=""/>
+    </f:entry>
+    <f:entry title="Unstable message" field="messageUnstable">
+        <f:textbox default=""/>
+    </f:entry>
+    <f:entry title="Failure message" field="messageFailure">
+        <f:textbox default=""/>
+    </f:entry>
+    <f:entry title="Aborted message" field="messageAborted">
+        <f:textbox default=""/>
+    </f:entry>
+    <f:entry title="Other message" field="messageOther">
+        <f:textbox default=""/>
+    </f:entry>
+    <f:entry title="Pending message" field="messagePending">
+        <f:textbox default=""/>
+    </f:entry>
+    <f:entry title="Queued message" field="messageQueued">
+        <f:textbox default=""/>
+    </f:entry>
 </j:jelly>
