@@ -3,6 +3,8 @@ package org.jenkinsci.plugins.githubScmTraitNotificationContext;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.TaskListener;
+import hudson.model.Run;
+import hudson.model.Result;
 import jenkins.scm.api.SCMHead;
 import jenkins.scm.api.SCMHeadCategory;
 import jenkins.scm.api.SCMSource;
@@ -30,9 +32,18 @@ public class NotificationContextTrait extends SCMSourceTrait {
     private String messageQueued;
 
     @DataBoundConstructor
-    public NotificationContextTrait(String contextLabel, boolean typeSuffix) {
+    public NotificationContextTrait(String contextLabel, boolean typeSuffix, String messageGood,
+                                    String messageUnstable, String messageFailure, String messageAborted,
+                                    String messageOther, String messagePending, String messageQueued) {
         this.contextLabel = contextLabel;
         this.typeSuffix = typeSuffix;
+        this.messageGood = messageGood;
+        this.messageUnstable = messageUnstable;
+        this.messageFailure = messageFailure;
+        this.messageAborted = messageAborted;
+        this.messageOther = messageOther;
+        this.messagePending = messagePending;
+        this.messageQueued = messageQueued;
     }
 
     public String getContextLabel() {
@@ -46,8 +57,29 @@ public class NotificationContextTrait extends SCMSourceTrait {
     @Override
     protected void decorateContext(SCMSourceContext<?, ?> context) {
         GitHubSCMSourceContext githubContext = (GitHubSCMSourceContext) context;
-        githubContext.withNotificationStrategies(Collections.singletonList(
-                new CustomContextNotificationStrategy(contextLabel, typeSuffix)));
+        CustomContextNotificationStrategy notificationStrategy = new CustomContextNotificationStrategy(contextLabel, typeSuffix);
+        if (!messageGood.isEmpty()) {
+            notificationStrategy.messageGood = messageGood;
+        }
+        if (!messageUnstable.isEmpty()) {
+            notificationStrategy.messageUnstable = messageUnstable;
+        }
+        if (!messageFailure.isEmpty()) {
+            notificationStrategy.messageFailure = messageFailure;
+        }
+        if (!messageAborted.isEmpty()) {
+            notificationStrategy.messageAborted = messageAborted;
+        }
+        if (!messageOther.isEmpty()) {
+            notificationStrategy.messageOther = messageOther;
+        }
+        if (!messagePending.isEmpty()) {
+            notificationStrategy.messagePending = messagePending;
+        }
+        if (!messageQueued.isEmpty()) {
+            notificationStrategy.messageQueued = messageQueued;
+        }
+        githubContext.withNotificationStrategies(Collections.singletonList(notificationStrategy));
     }
 
     @Override
@@ -84,10 +116,24 @@ public class NotificationContextTrait extends SCMSourceTrait {
 
         private String contextLabel;
         private boolean typeSuffix;
+        public String messageGood;
+        public String messageUnstable;
+        public String messageFailure;
+        public String messageAborted;
+        public String messageOther;
+        public String messagePending;
+        public String messageQueued;
 
         CustomContextNotificationStrategy(String contextLabel, boolean typeSuffix) {
             this.contextLabel = contextLabel;
             this.typeSuffix = typeSuffix;
+            this.messageGood = Messages.GitHubBuildStatusNotification_CommitStatus_Good();
+            this.messageUnstable = Messages.GitHubBuildStatusNotification_CommitStatus_Unstable();
+            this.messageFailure = Messages.GitHubBuildStatusNotification_CommitStatus_Failure();
+            this.messageAborted = Messages.GitHubBuildStatusNotification_CommitStatus_Aborted();
+            this.messageOther = Messages.GitHubBuildStatusNotification_CommitStatus_Other();
+            this.messagePending = Messages.GitHubBuildStatusNotification_CommitStatus_Pending();
+            this.messageQueued = Messages.GitHubBuildStatusNotification_CommitStatus_Queued();
         }
 
         private String buildContext(GitHubNotificationContext notificationContext) {
@@ -108,22 +154,22 @@ public class NotificationContextTrait extends SCMSourceTrait {
 
         @Override
         public List<GitHubNotificationRequest> notifications(GitHubNotificationContext notificationContext, TaskListener listener) {
-            message = messageQueued.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Queued() : messageQueued;
-            build = notificationContext.getBuild();
+            String message = this.messageQueued;
+            Run<?, ?> build = notificationContext.getBuild();
             if (null != build) {
                 Result result = build.getResult();
                 if (Result.SUCCESS.equals(result)) {
-                    return messageGood.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Good() : messageGood;
+                    message = this.messageGood;
                 } else if (Result.UNSTABLE.equals(result)) {
-                    return messageUnstable.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Unstable() : messageUnstable;
+                    message = this.messageUnstable;
                 } else if (Result.FAILURE.equals(result)) {
-                    return messageFailure.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Failure() : messageFailure;
+                    message = this.messageFailure;
                 } else if (Result.ABORTED.equals(result)) {
-                    return messageAborted.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Aborted() : messageAborted;
+                    message = this.messageAborted;
                 } else if (result != null) { // NOT_BUILT etc.
-                    return messageOther.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Other() : messageOther;
+                    message = this.messageOther;
                 } else {
-                    return messagePending.isEmpty() ? Messages.GitHubBuildStatusNotification_CommitStatus_Pending() : messagePending;
+                    message = this.messagePending;
                 }
             }
 
