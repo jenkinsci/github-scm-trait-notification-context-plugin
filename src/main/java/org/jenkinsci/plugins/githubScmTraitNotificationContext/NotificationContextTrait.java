@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.githubScmTraitNotificationContext;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.TaskListener;
 import jenkins.scm.api.SCMHead;
 import jenkins.scm.api.SCMHeadCategory;
@@ -10,7 +11,14 @@ import jenkins.scm.api.trait.SCMBuilder;
 import jenkins.scm.api.trait.SCMSourceContext;
 import jenkins.scm.api.trait.SCMSourceTrait;
 import jenkins.scm.api.trait.SCMSourceTraitDescriptor;
-import org.jenkinsci.plugins.github_branch_source.*;
+import org.jenkinsci.plugins.github_branch_source.AbstractGitHubNotificationStrategy;
+import org.jenkinsci.plugins.github_branch_source.GitHubNotificationContext;
+import org.jenkinsci.plugins.github_branch_source.GitHubNotificationRequest;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMBuilder;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
+import org.jenkinsci.plugins.github_branch_source.GitHubSCMSourceContext;
+import org.jenkinsci.plugins.github_branch_source.PullRequestSCMHead;
+import org.jenkinsci.plugins.tokenmacro.TokenMacro;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.Collections;
@@ -83,25 +91,43 @@ public class NotificationContextTrait extends SCMSourceTrait {
             this.typeSuffix = typeSuffix;
         }
 
-        private String buildContext(GitHubNotificationContext notificationContext) {
+        private String buildContext(GitHubNotificationContext notificationContext, TaskListener listener) {
+            String finalContextLabel = contextLabel;
+            try {
+
+                finalContextLabel = TokenMacro.expandAll(
+                        notificationContext.getBuild(),
+                        new FilePath(notificationContext.getBuild().getRootDir()),
+                        listener,
+                        contextLabel);
+                if (!contextLabel.equals(finalContextLabel)) {
+                    listener.getLogger().printf("Github Custom Notification Context: Expanded token macro from '%1$s' to '%2$s'\n",
+                            contextLabel, finalContextLabel);
+                }
+            } catch (Exception e) {
+                listener.error(
+                        "Github Custom Notification Context: Unable to expand GitHub Notification context macro '%1$s'",
+                        contextLabel);
+                e.printStackTrace(listener.getLogger());
+            }
             SCMHead head = notificationContext.getHead();
             if (typeSuffix) {
                 if (head instanceof PullRequestSCMHead) {
                     if (((PullRequestSCMHead) head).isMerge()) {
-                        return contextLabel + "/pr-merge";
+                        return finalContextLabel + "/pr-merge";
                     } else {
-                        return contextLabel + "/pr-head";
+                        return finalContextLabel + "/pr-head";
                     }
                 } else {
-                    return contextLabel + "/branch";
+                    return finalContextLabel + "/branch";
                 }
             }
-            return contextLabel;
+            return finalContextLabel;
         }
 
         @Override
         public List<GitHubNotificationRequest> notifications(GitHubNotificationContext notificationContext, TaskListener listener) {
-            return Collections.singletonList(GitHubNotificationRequest.build(buildContext(notificationContext),
+            return Collections.singletonList(GitHubNotificationRequest.build(buildContext(notificationContext, listener),
                     notificationContext.getDefaultUrl(listener),
                     notificationContext.getDefaultMessage(listener),
                     notificationContext.getDefaultState(listener),
