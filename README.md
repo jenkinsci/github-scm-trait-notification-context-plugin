@@ -1,6 +1,6 @@
 # "Github Custom Notification Context SCM Behaviour" Jenkins plugin
 
-This plugin allows defining custom context labels for GitHub build status notifications. This was implemented by Github Branch Source trait.
+This plugin allows defining custom context labels for GitHub build status notifications and optionally select only subset of statuses to report. This was implemented by Github Branch Source trait.
 
 ## How to use this plugin
 

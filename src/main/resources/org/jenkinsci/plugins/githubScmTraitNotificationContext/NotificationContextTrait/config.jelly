@@ -6,4 +6,19 @@
     <f:entry title="Label" field="contextLabel">
         <f:textbox default="continuous-integration/jenkins"/>
     </f:entry>
+    <f:entry title="Report SUCCESS build result?" field="reportSuccess">
+        <f:checkbox />
+    </f:entry>
+    <f:entry title="Report UNSTABLE build result?" field="reportUnstable">
+        <f:checkbox />
+    </f:entry>
+    <f:entry title="Report FAILURE build result?" field="reportFailure">
+        <f:checkbox />
+    </f:entry>
+    <f:entry title="Report NOT_BUILT build result?" field="reportNotBuilt">
+        <f:checkbox />
+    </f:entry>
+    <f:entry title="Report ABORTED build result?" field="reportAborted">
+        <f:checkbox />
+    </f:entry>
 </j:jelly>
