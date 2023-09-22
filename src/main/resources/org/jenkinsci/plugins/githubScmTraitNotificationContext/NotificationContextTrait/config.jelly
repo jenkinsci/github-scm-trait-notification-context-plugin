@@ -6,7 +6,7 @@
     <f:entry title="Label(s)" field="contextLabel">
         <f:textbox default="continuous-integration/jenkins"/>
     </f:entry>
-    <f:optionalBlock title="Use multiple status notifications" name="multipleStatuses">
+    <f:optionalBlock title="Use multiple status notifications" name="multipleStatuses" inline="true" checked="${instance.multipleStatuses}">
         <f:entry title="Delimiter" field="multipleStatusDelimiter">
             <f:textbox default=","/>
         </f:entry>
