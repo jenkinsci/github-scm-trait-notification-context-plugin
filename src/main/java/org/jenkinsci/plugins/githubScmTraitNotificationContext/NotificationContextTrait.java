@@ -15,6 +15,7 @@ import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSourceContext;
 import org.jenkinsci.plugins.github_branch_source.PullRequestSCMHead;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
@@ -26,7 +27,6 @@ import jenkins.scm.api.trait.SCMBuilder;
 import jenkins.scm.api.trait.SCMSourceContext;
 import jenkins.scm.api.trait.SCMSourceTrait;
 import jenkins.scm.api.trait.SCMSourceTraitDescriptor;
-import jenkins.scm.impl.trait.Selection;
 
 public class NotificationContextTrait extends SCMSourceTrait {
 
@@ -36,11 +36,9 @@ public class NotificationContextTrait extends SCMSourceTrait {
     private String multipleStatusDelimiter;
 
     @DataBoundConstructor
-    public NotificationContextTrait(String contextLabel, boolean typeSuffix, boolean multipleStatuses, String multipleStatusDelimiter) {
+    public NotificationContextTrait(String contextLabel, boolean typeSuffix) {
         this.contextLabel = contextLabel;
         this.typeSuffix = typeSuffix;
-        this.multipleStatuses = multipleStatuses;
-        this.multipleStatusDelimiter = multipleStatusDelimiter;
     }
 
     public String getContextLabel() {
@@ -55,8 +53,18 @@ public class NotificationContextTrait extends SCMSourceTrait {
         return multipleStatuses;
     }
 
+    @DataBoundSetter
+    public void setMultipleStatuses(boolean multipleStatuses) {
+        this.multipleStatuses = multipleStatuses;
+    }
+
     public String getMultipleStatusDelimiter() {
         return multipleStatusDelimiter;
+    }
+
+    @DataBoundSetter
+    public void setMultipleStatusDelimiter(String multipleStatusDelimiter) {
+        this.multipleStatusDelimiter = multipleStatusDelimiter;
     }
 
     @Override
@@ -71,7 +79,6 @@ public class NotificationContextTrait extends SCMSourceTrait {
         return category.isUncategorized();
     }
 
-    @Selection
     @Symbol("gitHubNotificationContextTrait")
     @Extension
     public static class DescriptorImpl extends SCMSourceTraitDescriptor {
