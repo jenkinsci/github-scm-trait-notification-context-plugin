@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.2</version>
+        <version>4.57</version>
         <relativePath />
     </parent>
+
     <artifactId>github-scm-trait-notification-context</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>${revision}-${changelist}</version>
     <packaging>hpi</packaging>
+
     <properties>
-        <jenkins.version>2.73.3</jenkins.version>
-        <java.level>8</java.level>
+        <revision>1.2</revision>
+        <changelist>999999-SNAPSHOT</changelist>
+        <jenkins.version>2.375.3</jenkins.version>
     </properties>
+
     <name>Github Custom Notification Context SCM Behaviour</name>
     <description>A trait which allows the setting of a custom context in the Github status notifications</description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Github+Custom+Notification+Context+SCM+Behaviour</url>
+
     <licenses>
         <license>
             <name>MIT License</name>
@@ -28,8 +34,8 @@
         <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <repositories>
         <repository>
@@ -43,26 +49,18 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
+
     <dependencies>
-        <dependency>
-            <groupId>org.jenkins-ci</groupId>
-            <artifactId>annotation-indexer</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>token-macro</artifactId>
-            <version>1.12.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.infradna.tool</groupId>
-            <artifactId>bridge-method-annotation</artifactId>
-            <version>1.17</version>
-        </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>github-branch-source</artifactId>
-            <version>2.3.2</version>
+            <version>1703.vd5a_2b_29c6cdc</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>jackson2-api</artifactId>
+            <version>2.13.3-285.vc03c0256d517</version>
         </dependency>
     </dependencies>
 </project>

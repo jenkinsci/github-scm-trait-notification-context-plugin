@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.github_branch_source.AbstractGitHubNotificationStrategy;
 import org.jenkinsci.plugins.github_branch_source.GitHubNotificationContext;
 import org.jenkinsci.plugins.github_branch_source.GitHubNotificationRequest;
@@ -25,6 +26,7 @@ import jenkins.scm.api.trait.SCMBuilder;
 import jenkins.scm.api.trait.SCMSourceContext;
 import jenkins.scm.api.trait.SCMSourceTrait;
 import jenkins.scm.api.trait.SCMSourceTraitDescriptor;
+import jenkins.scm.impl.trait.Selection;
 
 public class NotificationContextTrait extends SCMSourceTrait {
 
@@ -69,6 +71,8 @@ public class NotificationContextTrait extends SCMSourceTrait {
         return category.isUncategorized();
     }
 
+    @Selection
+    @Symbol("gitHubNotificationContextTrait")
     @Extension
     public static class DescriptorImpl extends SCMSourceTraitDescriptor {
 
