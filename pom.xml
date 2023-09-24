@@ -19,9 +19,9 @@
         <jenkins.version>2.387.3</jenkins.version>
     </properties>
 
-    <name>Github Custom Notification Context SCM Behaviour</name>
-    <description>A trait which allows the setting of a custom context in the Github status notifications</description>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/Github+Custom+Notification+Context+SCM+Behaviour</url>
+    <name>GitHub Custom Notification Context SCM Behaviour</name>
+    <description>A trait which allows the setting of a custom context in the GitHub status notifications</description>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Custom+Notification+Context+SCM+Behaviour</url>
 
     <licenses>
         <license>
