@@ -20,7 +20,7 @@
     </properties>
 
     <name>GitHub Custom Notification Context SCM Behaviour</name>
-    <description>A trait which allows the setting of a custom context in the GitHub status notifications</description>
+    <description>A trait which allows the setting of custom context labels in the GitHub status notifications</description>
     <url>https://github.com/jenkinsci/github-scm-trait-notification-context-plugin</url>
 
     <licenses>
