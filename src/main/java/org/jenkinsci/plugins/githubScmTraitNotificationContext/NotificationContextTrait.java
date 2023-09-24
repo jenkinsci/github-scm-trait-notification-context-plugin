@@ -54,7 +54,7 @@ public class NotificationContextTrait extends SCMSourceTrait {
         @NonNull
         @Override
         public String getDisplayName() {
-            return "Custom Github Notification Context";
+            return "Custom GitHub Notification Context";
         }
 
         @Override
