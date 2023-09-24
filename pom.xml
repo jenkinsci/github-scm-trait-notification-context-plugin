@@ -11,7 +11,7 @@
     <version>1.2-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
-        <jenkins.version>2.73.3</jenkins.version>
+        <jenkins.version>2.387.3</jenkins.version>
     </properties>
     <name>Github Custom Notification Context SCM Behaviour</name>
     <description>A trait which allows the setting of a custom context in the Github status notifications</description>
