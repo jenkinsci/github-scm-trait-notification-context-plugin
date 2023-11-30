@@ -130,7 +130,7 @@ public class NotificationContextTrait extends SCMSourceTrait {
                         listener,
                         label);
                 if (!label.equals(finalLabel)) {
-                    listener.getLogger().printf("Github Custom Notification Context: Expanded token macro from '%1$s' to '%2$s'\n",
+                    listener.getLogger().printf("Github Custom Notification Context: Expanded token macro from '%1$s' to '%2$s'%n",
                             label, finalLabel);
                 }
             } catch (Exception e) {
