@@ -14,11 +14,13 @@ import org.jenkinsci.plugins.github_branch_source.GitHubSCMBuilder;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSource;
 import org.jenkinsci.plugins.github_branch_source.GitHubSCMSourceContext;
 import org.jenkinsci.plugins.github_branch_source.PullRequestSCMHead;
+import org.jenkinsci.plugins.tokenmacro.TokenMacro;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.TaskListener;
 import jenkins.scm.api.SCMHead;
 import jenkins.scm.api.SCMHeadCategory;
@@ -119,24 +121,42 @@ public class NotificationContextTrait extends SCMSourceTrait {
             this.multipleStatusDelimiter = multipleStatusDelimiter;
         }
 
-        private String buildContext(GitHubNotificationContext notificationContext, String label) {
+        private String buildContext(GitHubNotificationContext notificationContext, String label, TaskListener listener) {
+            String finalLabel = label;
+            try {
+                finalLabel = TokenMacro.expandAll(
+                        notificationContext.getBuild(),
+                        new FilePath(notificationContext.getBuild().getRootDir()),
+                        listener,
+                        label);
+                if (!label.equals(finalLabel)) {
+                    listener.getLogger().printf("Github Custom Notification Context: Expanded token macro from '%1$s' to '%2$s'%n",
+                            label, finalLabel);
+                }
+            } catch (Exception e) {
+                listener.error(
+                        "Github Custom Notification Context: Unable to expand GitHub Notification context macro '%1$s'",
+                        label);
+                e.printStackTrace(listener.getLogger());
+            }
+
             SCMHead head = notificationContext.getHead();
             if (typeSuffix) {
                 if (head instanceof PullRequestSCMHead) {
                     if (((PullRequestSCMHead) head).isMerge()) {
-                        return label + "/pr-merge";
+                        return finalLabel + "/pr-merge";
                     } else {
-                        return label + "/pr-head";
+                        return finalLabel + "/pr-head";
                     }
                 } else {
-                    return label + "/branch";
+                    return finalLabel + "/branch";
                 }
             }
-            return label;
+            return finalLabel;
         }
 
         private GitHubNotificationRequest buildNotification(GitHubNotificationContext notificationContext, TaskListener listener, String label) {
-            return GitHubNotificationRequest.build(buildContext(notificationContext, label),
+            return GitHubNotificationRequest.build(buildContext(notificationContext, label, listener),
                     notificationContext.getDefaultUrl(listener),
                     notificationContext.getDefaultMessage(listener),
                     notificationContext.getDefaultState(listener),
